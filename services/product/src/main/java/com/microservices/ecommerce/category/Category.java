@@ -16,7 +16,7 @@ public class Category {
 
     @Id
     @GeneratedValue
-    private Integer Id;
+    private Integer id;
     private String name;
     private String description;
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
