@@ -6,6 +6,8 @@ import com.microservices.ecommerce.kafka.OrderConfirmation;
 import com.microservices.ecommerce.kafka.OrderProducer;
 import com.microservices.ecommerce.orderline.OrderLineRequest;
 import com.microservices.ecommerce.orderline.OrderLineService;
+import com.microservices.ecommerce.payment.PaymentClient;
+import com.microservices.ecommerce.payment.PaymentRequest;
 import com.microservices.ecommerce.product.ProductClient;
 import com.microservices.ecommerce.product.PurchaseRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,6 +27,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
 
     public Integer createdOrder(OrderRequest orderRequest) {
         // Check the customer --> OpenFeign
@@ -50,6 +53,14 @@ public class OrderService {
         }
 
         // TODO Start Payment Process
+        var paymentRequest = new PaymentRequest(
+            orderRequest.amount(),
+                orderRequest.paymentMethod(),
+                order.getId(),
+                order.getReference(),
+                customer
+        );
+        paymentClient.requestOrderPayment(paymentRequest);
 
 
         // Send the Order Confirmation --> Notification ms (kafka)
