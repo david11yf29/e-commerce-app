@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -13,7 +14,6 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +23,12 @@ import static com.microservices.ecommerce.email.EmailTemplates.PAYMENT_CONFIRMAT
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.mail.javamail.MimeMessageHelper.MULTIPART_MODE_RELATED;
 
-@Slf4j
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EmailService {
 
+//    @Autowired
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
@@ -38,6 +39,7 @@ public class EmailService {
             BigDecimal amount,
             String orderReference
     ) throws MessagingException {
+
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper =
                 new MimeMessageHelper(mimeMessage, MULTIPART_MODE_RELATED, UTF_8.name());
@@ -59,9 +61,9 @@ public class EmailService {
 
             messageHelper.setTo(destinationEmail);
             mailSender.send(mimeMessage);
-            log.info("INFO - Email successfully sent to %s with template %s", destinationEmail, templateName);
+            log.info("INFO - Email successfully sent to %s with template %s ", destinationEmail, templateName);
         } catch (MessagingException e) {
-            log.warn("WARNING - Cannot sent email to {}", destinationEmail);
+            log.warn("WARNING - Cannot sent email to {} ", destinationEmail);
         }
     }
 
@@ -95,9 +97,9 @@ public class EmailService {
 
             messageHelper.setTo(destinationEmail);
             mailSender.send(mimeMessage);
-            log.info("INFO - Email successfully sent to %s with template %s", destinationEmail, templateName);
+            log.info("INFO - Email successfully sent to %s with template %s ", destinationEmail, templateName);
         } catch (MessagingException e) {
-            log.warn("WARNING - Cannot sent email to {}", destinationEmail);
+            log.warn("WARNING - Cannot sent email to {} ", destinationEmail);
         }
     }
 }

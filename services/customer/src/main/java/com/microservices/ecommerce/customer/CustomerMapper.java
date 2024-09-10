@@ -13,8 +13,8 @@ public class CustomerMapper {
         }
         return Customer.builder()
                 .id(customerRequest.id())
-                .firstName(customerRequest.firstName())
-                .lastName(customerRequest.lastName())
+                .firstName(customerRequest.firstname())
+                .lastName(customerRequest.lastname())
                 .email(customerRequest.email())
                 .address(customerRequest.address())
                 .build();
