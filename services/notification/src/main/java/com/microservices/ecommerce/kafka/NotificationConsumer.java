@@ -21,15 +21,16 @@ import static com.microservices.ecommerce.notification.NotificationType.PAYMENT_
 @Slf4j
 public class NotificationConsumer {
 
-    private final NotificationRepository notificationRepository;
+    private final NotificationRepository repository;
     private final EmailService emailService;
 
-    @KafkaListener(topics = "payment-topic")
+    //    @KafkaListener(topics = "payment-topic")
+    @KafkaListener(topics = "payment-topic", groupId = "paymentGroup", containerFactory = "kafkaListenerContainerFactory")
     public void consumePaymentSuccessNotification(PaymentConfirmation paymentConfirmation) throws MessagingException {
-        log.info("Consuming the message from payment-topic Topic:: {}", paymentConfirmation);
-        notificationRepository.save(
+        log.info("Consuming the message from payment-topic Topic:: {}", paymentConfirmation.toString());
+        repository.save(
                 Notification.builder()
-                        .notificationType(PAYMENT_CONFIRMATION)
+                        .type(PAYMENT_CONFIRMATION)
                         .notificationDate(LocalDateTime.now())
                         .paymentConfirmation(paymentConfirmation)
                         .build()
@@ -45,12 +46,13 @@ public class NotificationConsumer {
         );
     }
 
-    @KafkaListener(topics = "order-topic")
+//    @KafkaListener(topics = "order-topic")
+    @KafkaListener(topics = "order-topic", groupId = "orderGroup", containerFactory = "kafkaListenerContainerFactory")
     public void consumeOrderConfirmationNotification(OrderConfirmation orderConfirmation) throws MessagingException {
-        log.info("Consuming the message from order-topic Topic:: {}", orderConfirmation);
-        notificationRepository.save(
+        log.info("Consuming the message from order-topic Topic:: {}", orderConfirmation.toString());
+        repository.save(
                 Notification.builder()
-                        .notificationType(ORDER_CONFIRMATION)
+                        .type(ORDER_CONFIRMATION)
                         .notificationDate(LocalDateTime.now())
                         .orderConfirmation(orderConfirmation)
                         .build()
